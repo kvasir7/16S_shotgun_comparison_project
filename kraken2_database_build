@@ -1,0 +1,28 @@
+#library construction procedure modifed from https://telatin.github.io/microbiome-bioinformatics//Build-a-kraken2-database/
+
+#need to install kraken2 (current version, to avoid conflicts when pulling from NCBI in the --download-taxonomy step)
+
+#need to install seqfu for appending taxID
+
+#must add the NCBI taxid for genome to contig names |kraken:taxid|2697049. To do this create a new database folder to store the modified genome.
+mkdir /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB
+
+#add the taxid by using seqfu
+seqfu cat --append "|kraken:taxid|8407 home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/reference_genomes/rana_temporaria/GCF_905171775.1_aRanTem1.1_genomic.fna.gz > /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB/GCF_905171775.1_aRanTem1.1_genomic_taxid.fna
+
+#check that the taxid was appended correctly
+grep ">" /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB/GCF_905171775.1_aRanTem1.1_genomic_taxid.fna
+
+#add your fasta or fna file toi a new database the was previously named
+kraken2-build --add-to-library /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB/GCF_905171775.1_aRanTem1.1_genomic_taxid.fna --db /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB --threads 4
+
+# haveaken2 to build the taxonomy
+kraken2-build --download-taxonomy --db /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB
+	
+#build the database
+kraken2-build --build --db /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB
+
+#clean the database
+kraken2-build --clean --db /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB
+
+#can proceed to removing host sequences with database
