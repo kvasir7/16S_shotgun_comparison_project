@@ -1,1 +1,21 @@
+#modified from https://telatin.github.io/microbiome-bioinformatics//Host-removal/
+#make a directory for no host output in directory
+mkdir ~/norana
 
+#Sample below is generic sample name
+#norana is the ouput directory
+#~/rana_temporaria_DB is the path to the kraken2 custom database for the Rana temporaria host
+#Sample.report generates an output report with amount of contamination
+#Sample#.fq are the host free reads, they don't match the database
+#Sample.txt collects the read classification from stdout
+
+kraken2 --db /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB --threads 5 --confidence 0.5 \
+  --minimum-base-quality 22 \
+  --report ~/norana/Sample.report \
+  --unclassified-out ~/norana/Sample#.fq \
+  --paired /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/16S_comparison/Sample_R1.fastq.gz /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/16S_comparison/Sample_R2.fastq.gz > ~/norana/Sample.txt 
+
+#gzip the fastq reads again before continuing to save space
+pigz -p 6 ~/nomouse/Sample8_*.fq
+
+#output wihtout host can now be used in downstream applications like Qiita
