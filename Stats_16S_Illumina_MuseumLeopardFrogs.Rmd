@@ -1,0 +1,267 @@
+---
+title: "16S Illumina Museum"
+author: "SERDP_Microbiome"
+date: "1/31/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(usedist)
+library(lme4)
+library(vegan)
+library(pairwiseAdonis)
+library(ape)
+library(qiime2R)
+library(tidyverse)
+library(performance)
+library(patchwork)
+
+# plot theme
+themeMod=theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.background = element_blank(), text = element_text(colour = "black", size = 15),  axis.text = element_text(size = 15, color="black"),panel.border = element_blank(), axis.line.x = element_line(color="black", size = .5), axis.line.y = element_line(color="black", size = .5), plot.title=element_text(hjust =-.25),panel.background = element_rect(colour =NA, fill = NA))
+
+theme_set(themeMod)
+
+set.seed(120)
+```
+
+# Read in the Data
+
+
+```{r Data}
+metadata=read_csv("Museum_mapping_AlphaDiv.csv")
+str(metadata)
+
+taxonomy=read_qza("TaxonomyFilt.qza")$data
+
+bray_curtis=read_qza("Core_Metric_Results_Bac/bray_curtis_distance_matrix.qza")$data
+jaccard=read_qza("Core_Metric_Results_Bac/jaccard_distance_matrix.qza")$data
+WuniFrac=read_qza("Core_Metric_Results_Bac/weighted_unifrac_distance_matrix.qza")$data
+UWuniFrac=read_qza("Core_Metric_Results_Bac/unweighted_unifrac_distance_matrix.qza")$data
+
+OTU_table_orig=read_qza("Core_Metric_Results_Bac/rarefied3000_table.qza")$data
+
+OTU_table=as.data.frame(OTU_table_orig)%>%
+  rownames_to_column("featureid")
+
+bray_curtis_dm=as.matrix(bray_curtis)
+jaccard_dm=as.matrix(jaccard)
+WuniFrac_dm=as.matrix(WuniFrac)
+UWuniFrac_dm=as.matrix(UWuniFrac)
+
+Taxa=taxonomy%>%
+  mutate(Taxon=gsub("[][]", "", Taxon))%>%
+  parse_taxonomy(.)%>%
+  rownames_to_column("featureid")%>%
+  mutate(Kingdom=gsub("d__","",Kingdom))
+
+```
+
+# Alpha Diversity
+
+```{r Alpha, echo=FALSE}
+
+
+```
+
+# Beta Diversity
+
+```{r Beta, echo=FALSE}
+#Filter Distance Matrix
+metalist=as.vector(metadata$SampleID)
+
+#subsetting the distance matrix to the list of sample IDs from above
+BC_mx=as.matrix(usedist::dist_subset(bray_curtis_dm,metalist))
+JC_mx=as.matrix(usedist::dist_subset(jaccard_dm,metalist))
+W_mx=as.matrix(usedist::dist_subset(WuniFrac_dm,metalist))
+UW_mx=as.matrix(usedist::dist_subset(UWuniFrac_dm,metalist))
+
+#run our beta diversity models
+JC_mod=adonis(JC_mx~XXX,
+               data = metadata)
+JC_mod
+
+#pairwise compoarison to see how ...
+JC_pairwise=pairwiseAdonis::pairwise.adonis(JC_mx, 
+                                             metadata$XXX,
+                                             p.adjust.m = "bonferroni")
+JC_pairwise
+
+#dispersion test
+JC_disp=betadisper(as.dist(JC_mx), 
+                    metadata$XXX,
+                    type = c("centroid"),
+                    bias.adjust = TRUE,
+                    sqrt.dist = FALSE,
+                    add = FALSE)
+
+anova(JC_disp)
+
+#Unweighted
+UW_mod=adonis(UW_mx~XXX,
+               data = metadata)
+UW_mod
+
+#pairwise compoarison to see how ...
+UW_pairwise=pairwiseAdonis::pairwise.adonis(UW_mx, 
+                                             metadata$XXX,
+                                             p.adjust.m = "bonferroni")
+UW_pairwise
+
+#dispersion test
+UW_disp=betadisper(as.dist(UW_mx), 
+                    metadata$XXX,
+                    type = c("centroid"),
+                    bias.adjust = TRUE,
+                    sqrt.dist = FALSE,
+                    add = FALSE)
+
+anova(JC_disp)
+```
+
+#Alpha and Beta Div
+
+```{r Div Plots, echo=FALSE}
+#make a beta diversity plot
+BC_PCoA=ape::pcoa(BC_mx)
+JC_PCoA=ape::pcoa(JC_mx)
+W_PCoA=ape::pcoa(W_mx)
+UW_PCoA=ape::pcoa(UW_mx)
+
+BC_PCoA_Axes=as.data.frame(BC_PCoA$vectors)%>%
+  rownames_to_column("SampleID")
+
+JC_PCoA_Axes=as.data.frame(JC_PCoA$vectors)%>%
+  rownames_to_column("SampleID")
+
+W_PCoA_Axes=as.data.frame(W_PCoA$vectors)%>%
+  rownames_to_column("SampleID")
+
+UW_PCoA_Axes=as.data.frame(UW_PCoA$vectors)%>%
+  rownames_to_column("SampleID")
+
+JC_plot=JC_PCoA_Axes%>%
+  select(SampleID,Axis.1,Axis.2)%>%
+  left_join(metadata)%>%
+  ggplot(aes(x=Axis.1,y=Axis.2,color=Museum))+
+  geom_point(aes(alpha=0.05))+
+  #stat_ellipse(type="t", linetype=2)+
+  labs(title="Jaccard", x="PCoA 1 - 16.14%", y="PCoA 2 - 7.71%")+
+  guides(alpha="none")+
+  scale_color_manual(values = c("#1c63a5","#a4db76","#2c9320"))
+
+UW_plot=UW_PCoA_Axes%>%
+  select(SampleID,Axis.1,Axis.2)%>%
+  left_join(metadata)%>%
+  ggplot(aes(x=Axis.1,y=Axis.2,color=Museum))+
+  geom_point(aes(alpha=0.05))+
+  #stat_ellipse(type="t", linetype=2)+
+  labs(title="Unweighted Unifrac",x="PCoA 1 - 30.17%", y="PCoA 2 - 11.13%")+
+  guides(alpha="none")+
+  scale_color_manual(values = c("#1c63a5","#a4db76","#2c9320"))
+  
+(JC_plot|UW_plot)+plot_layout(guides = "collect")
+
+```
+
+#Taxonomy Plot
+
+```{r Taxa Plots, echo=FALSE}
+#merging our OTU table with the Taxa file
+TableTaxa=OTU_table%>%
+  left_join(.,Taxa,by="featureid")%>%
+  pivot_longer(cols = 2:19, names_to = "SampleID", values_to = "Reads")%>%
+  right_join(.,metadata,by="SampleID")%>%
+  arrange(SampleID)%>%
+  mutate(Reads=replace_na(Reads,0))
+
+#Filter and get data in format for plotting! Filter to the bacteria family level
+TableTaxa_Family=TableTaxa%>%
+  group_by(Family,FrogID)%>%
+  summarize(Reads=sum(Reads))%>%
+  pivot_wider(names_from = FrogID,values_from = Reads)%>%
+  mutate(TotalAbd=sum(c_across(1:18)))
+
+#Select rows for the selected taxa that I want to plot (top 14 Families plus the "Other")
+TableTaxa_Family_Top=TableTaxa_Family%>%
+  filter(!is.na(Family),
+         TotalAbd>500)%>%
+  as.data.frame(.)%>%
+  mutate(Num=1:n())
+
+#Create the "Other" category for plotting
+TableTaxa_Family_Low=TableTaxa_Family%>%
+  filter(is.na(Family)|TotalAbd<500)%>%
+  mutate(Family="Other")%>%
+  group_by(Family)%>%
+   summarise(across(1:18, sum))%>%
+  mutate(Num=15)%>%
+  as.data.frame(.)
+
+#merge two tables and make it long data
+TableTaxa_Family_Summarize=full_join(TableTaxa_Family_Top,TableTaxa_Family_Low)%>%
+  select(-TotalAbd)%>%
+  pivot_longer(cols = 2:19,names_to = "FrogID",values_to = "rel.freq")%>%
+  group_by(FrogID)%>%
+  mutate(rel.freq=rel.freq/sum(rel.freq))%>%
+  as.data.frame(.)
+
+#make plot
+FamilyTaxaPlot=TableTaxa_Family_Summarize%>%
+  arrange(Num,Family)%>%
+  mutate(Family=factor(Family, levels=unique(Family)))%>%
+  ggplot(aes(x=FrogID,y=rel.freq*100,fill=Family))+
+  geom_bar(stat = "identity")+
+  ggthemes::scale_fill_stata()+
+  labs(x="",y="Relative Abundance (%)")+
+  theme_update(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1,size=10))
+
+#Filter and get data in format for plotting! Filter to the bacteria family level
+TableTaxa_Genus=TableTaxa%>%
+  group_by(Genus,FrogID)%>%
+  summarize(Reads=sum(Reads))%>%
+  pivot_wider(names_from = FrogID,values_from = Reads)%>%
+  mutate(TotalAbd=sum(c_across(1:18)))
+
+#Select rows for the selected taxa that I want to plot (top 14 Families plus the "Other")
+TableTaxa_Genus_Top=TableTaxa_Genus%>%
+  filter(!is.na(Genus),
+         !Genus%in%"uncultured",
+         TotalAbd>250)%>%
+  as.data.frame(.)%>%
+  mutate(Num=1:n())
+
+#Create the "Other" category for plotting
+TableTaxa_Genus_Low=TableTaxa_Genus%>%
+  filter(is.na(Genus)|Genus%in%"uncultured"|TotalAbd<250)%>%
+  mutate(Genus="Other")%>%
+  group_by(Genus)%>%
+   summarise(across(1:18, sum))%>%
+  mutate(Num=15)%>%
+  as.data.frame(.)
+
+#merge two tables and make it long data
+TableTaxa_Genus_Summarize=full_join(TableTaxa_Genus_Top,TableTaxa_Genus_Low)%>%
+  select(-TotalAbd)%>%
+  pivot_longer(cols = 2:19,names_to = "FrogID",values_to = "rel.freq")%>%
+  group_by(FrogID)%>%
+  mutate(rel.freq=rel.freq/sum(rel.freq))%>%
+  as.data.frame(.)
+
+#make our plot!
+GenusTaxaPlot=TableTaxa_Genus_Summarize%>%
+  arrange(Num,Genus)%>%
+  mutate(Genus=factor(Genus, levels=unique(Genus)))%>%
+  ggplot(aes(x=FrogID,y=rel.freq*100,fill=Genus))+
+  geom_bar(stat = "identity")+
+  ggthemes::scale_fill_stata()+
+  labs(x="",y="Relative Abundance (%)")+
+  theme_update(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1,size=10))
+
+FamilyTaxaPlot|GenusTaxaPlot
+
+```
+
