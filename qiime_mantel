@@ -1,3 +1,6 @@
-### Thisis the qiime command (used in qiime2) for comparing different distance matrices - in this case comparing shotgun and 16S reference based bin assignment data.
+###call qiime2 env in conda
+conda activate qiime2-2022.2
+
+### This is the qiime command (used in qiime2) for comparing different distance matrices - in this case comparing shotgun and 16S reference based bin assignment data.
 
 qiime diversity mantel --i-dm1 /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Qiita_Analysis/MiSeq_16S_Museum_leopard_frog_gut/Analysis_Shotgun_Woltka_Species/153726_shotgun_distance_matrix_jaccard_speciesWoL_renamed.qza --i-dm2 /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Qiita_Analysis/MiSeq_16S_Museum_leopard_frog_gut/Analysis_16S_Deblur_150bp_Filter/153717_distancematrixjaccard_deblurhit1000_renamed.qza --output-dir Mantel_jaccard --p-intersect-ids
