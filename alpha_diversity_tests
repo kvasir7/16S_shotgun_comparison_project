@@ -1,1 +1,14 @@
+###analyzing group differences in ACE diversity with Kruskal Wallis test follwoed by Dunn's posthoc tests as Gaussian distribution not assumptions not met (small data sets)
 
+library(readODS)
+library(FSA)
+
+mydata <- read_ods("alpha_diversity_ACE_combined.ods")
+head(mydata
+
+set.seed(0)
+kruskal.test(ACE ~ Reference, data = mydata)
+dunnTest(ACE ~ Reference, data = mydata, method = "bonferroni")
+
+###can also use bh, etc.
+dunnTest(ACE ~ Reference, data = mydata, method = "bh")
