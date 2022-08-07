@@ -10,5 +10,8 @@ set.seed(0)
 kruskal.test(ACE ~ Reference, data = mydata)
 dunnTest(ACE ~ Reference, data = mydata, method = "bonferroni")
 
-###can also use bh, etc.
-dunnTest(ACE ~ Reference, data = mydata, method = "bh")
+### can also use bh, etc.
+### e.g. dunnTest(ACE ~ Reference, data = mydata, method = "bh")
+### the same tests were also applied to combined Shannon's diversity data generated in Qiita
+
+
