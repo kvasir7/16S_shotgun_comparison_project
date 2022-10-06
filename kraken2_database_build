@@ -1,4 +1,4 @@
-#for kraken, may first need to convert fastq files to fasta files. Can use the following command with Seqtk
+#for kraken, may first need to convert fastq files to fasta files. Can use the following command with Seqtk (example files used)
 seqtk seq -a BSC-1-2_S140_R2_001.fastq > BSC-1-2_S140_R2_001.fasta
 
 #library construction procedure modifed from https://telatin.github.io/microbiome-bioinformatics//Build-a-kraken2-database/
