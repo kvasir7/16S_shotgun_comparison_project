@@ -11,7 +11,7 @@ seqtk seq -a BSC-1-2_S140_R2_001.fastq > BSC-1-2_S140_R2_001.fasta
 mkdir /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB
 
 #add the taxid by using seqfu
-seqfu cat --append "|kraken:taxid|8407 home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/reference_genomes/rana_temporaria/GCF_905171775.1_aRanTem1.1_genomic.fna.gz > /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB/GCF_905171775.1_aRanTem1.1_genomic_taxid.fna
+seqfu cat --append "|kraken:taxid|8407" home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/reference_genomes/rana_temporaria/GCF_905171775.1_aRanTem1.1_genomic.fna.gz > /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB/GCF_905171775.1_aRanTem1.1_genomic_taxid.fna
 
 #check that the taxid was appended correctly
 grep ">" /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/rana_temporaria_DB/GCF_905171775.1_aRanTem1.1_genomic_taxid.fna
