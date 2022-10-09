@@ -15,6 +15,8 @@ kraken2 --db /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Sho
   --unclassified-out ~/norana/Sample#.fq \
   --paired /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/16S_comparison/Sample_R1.fastq.gz /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw/16S_comparison/Sample_R2.fastq.gz > ~/norana/Sample.txt 
 
+### kraken2 --db /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw_Data/BSC_control_DB --threads 5 --confidence .2 --minimum-base-quality 22 --report /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw_Data/no_BSC-1-2/BSC-1-2_S140.report --unclassified-out /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw_Data/no_BSC-1-2/BSC-1-2_S140#.fq --paired /home/joe/Documents/NSF_Fellowship/UMN_Sequencing/UMN_RawSeqData/BSC-1-2_S140_1.fastq.gz /home/joe/Documents/NSF_Fellowship/UMN_Sequencing/UMN_RawSeqData/BSC-1-2_S140_2.fastq.gz > /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Shotgun_Raw_Data/no_BSC-1-2/BSC-1-2_S140.txt
+
 #gzip the fastq reads again before continuing to save space
 pigz -p 6 ~/nomouse/Sample8_*.fq
 
