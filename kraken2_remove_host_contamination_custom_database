@@ -21,3 +21,16 @@ kraken2 --db /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Sho
 pigz -p 6 ~/nomouse/Sample8_*.fq
 
 #output wihtout host can now be used in downstream applications like Qiita
+
+###FOR DEALING WITH Xs in KRAKEN2 OUTPUT###
+###convert fastq to fasta, then run DNAclean (fasta necessary for DNAclean)
+
+
+###for converting fasta back to fastq with dummie quality scores (40), only use if not needing quality score in downstream applications!
+###install pyfastaq
+pip3 install pyfastaq
+###run command
+fastaq to_fake_qual in.fasta - | fastaq fasta_to_fastq in.fasta - out.fastq
+
+###then compress with
+pigz -p 6 file.fastq
