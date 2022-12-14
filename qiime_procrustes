@@ -1,8 +1,8 @@
 ###call qiime2 env in conda
 conda activate qiime2-2022.2
 
-###procrustes analysis with jaccard pcoa files
+###procrustes analysis with jaccard pcoa files, this is one example, differing comparisons had the corresponding files paths indicated
 qiime diversity procrustes-analysis --i-reference /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Qiita_Qiime2_Analysis/Shotgun_analyzed_data_Qiita/rep200_species/pcoa_rep200_jaccard_norarefy_museum.qza --i-other /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Illumina16S_Data/Core_Metric_Results_Bac/pcoa_16S_jaccard_museum.qza --output-dir Procrustes_analysis_Jaccard_rep200_museum
 
-###plotting the procrustes analysis output from above
+###plotting the procrustes analysis output from above, this is one example, differing comparisons had the corresponding files paths indicated
 qiime emperor procrustes-plot --i-reference-pcoa /home/joe/Procrustes_analysis_Jaccard_rep200_16S_fresh/transformed_reference.qza --i-other-pcoa /home/joe/Procrustes_analysis_Jaccard_rep200_16S_fresh/transformed_other.qza --m-metadata-file /home/joe/Documents/NSF_Fellowship/16S_Shotgun_Comparison_Study/Qiita_Qiime2_Analysis/Brandon_16S_files_metadata/SampleMetadata_qiita.txt --output-dir Procrustes_plot_Jaccard_rep200_16S_fresh
