@@ -1,4 +1,4 @@
-###analyzing group differences in ACE diversity with Kruskal Wallis test follwoed by Dunn's posthoc tests as Gaussian distribution not assumptions not met (small data sets)
+###analyzing group differences in ACE diversity with Kruskal Wallis test follwoed by Dunn's posthoc tests as Gaussian distribution not assumptions not met (small data sets) with Benjamini-Hochberg (BH) used for FDR correction.
 
 library(readODS)
 library(FSA)
@@ -8,7 +8,7 @@ head(mydata
 
 set.seed(0)
 kruskal.test(ACE ~ Reference, data = mydata)
-dunnTest(ACE ~ Reference, data = mydata, method = "bonferroni")
+dunnTest(ACE ~ Reference, data = mydata, method = "BH")
 
 ### can also use bh, etc.
 ### e.g. dunnTest(ACE ~ Reference, data = mydata, method = "bh")
