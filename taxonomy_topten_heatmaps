@@ -1,6 +1,7 @@
 
 ###heatmaps normalized by row, no dendrogram, <0.0002 is called as 0 in plots
 ###rep200 given, also WoL and 16S done, resulting in three independent figures by method
+###combined file name (transposed) is Barplot_Heatmap_topten_by_method_Phylum.ods
 
 Phylumrep200 <- read.csv("rep200_Phylum_Clean.csv", row.names= 1, header = TRUE, check.names=FALSE)
 Phylumrep200_matrix <- as.matrix(Phylumrep200)
