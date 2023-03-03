@@ -3,12 +3,22 @@
 library(readODS)
 library(FSA)
 
-mydata <- read_ods("alpha_diversity_ACE_combined.ods")
-head(mydata
+mydata <- read_ods("rep200_WoL_16s_species_biome_nonphylogenetic_160544_alpha-diversity_ACE_R_museum.ods")
+head(mydata)
 
-set.seed(0)
+set.seed(999)
 kruskal.test(ACE ~ Reference, data = mydata)
 dunnTest(ACE ~ Reference, data = mydata, method = "BH")
+
+#boxplots, saved as tiff
+
+library(datasets)
+mydata <- read_ods("rep200_WoL_16s_species_biome_nonphylogenetic_160544_alpha-diversity_ACE_R_museum.ods")
+tiff("ACE_museum.tiff", width = 325, height = 250, compression="lzw", units="mm", res=400)
+#fixed axis labels
+boxplot(ACE~Reference, data=mydata, col = "lightgray", ylim = range(0:8), yaxs = "i")
+axis(2, at=seq(0, 8, 1))
+dev.off()
 
 ### can also use bh, etc.
 ### e.g. dunnTest(ACE ~ Reference, data = mydata, method = "bh")
